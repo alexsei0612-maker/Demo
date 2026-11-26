@@ -181,7 +181,7 @@ function createIce(surface) {
       vec3 logoRay=normalize(mix(ray,inside,.52));
       float logoTime=-dot(p,forward)/min(-.08,dot(logoRay,forward));
       vec3 logoHit=p+max(0.,logoTime)*logoRay;
-      vec2 logoUV=.5+vec2(dot(logoHit,right)/.88,dot(logoHit,down)/.5626);
+      vec2 logoUV=.5+vec2(dot(logoHit,right)/.96,dot(logoHit,down)/.614);
       vec4 ink=texture2D(brand,clamp(logoUV,0.,1.));
       vec2 bounds=step(vec2(0.),logoUV)*step(logoUV,vec2(1.));
       float through=step(0.,logoTime)*step(logoTime,travel)*bounds.x*bounds.y*ink.a*(.24+min(damage,3.)*.18);
@@ -902,19 +902,10 @@ function draw(time) {
     cubes.filter(face=>face.depth>0).forEach(face=>glass(face));
   }
   if(logo.complete && logo.naturalWidth && (open || !iceVisible)) {
-    const logoWidth=radius*(open?1.72:1.39);
+    const logoWidth=radius*(open?1.98:1.55);
     const logoHeight=logoWidth*logo.naturalHeight/logo.naturalWidth;
     ctx.save();
     ctx.globalAlpha=open?release:.22+count*.18;
-    if(open) {
-      ctx.save();
-      ctx.translate(x,y);
-      ctx.scale(1,.72);
-      glow(0,0,radius*.98,[[0,'rgba(45,8,2,.87)'],[.63,'rgba(49,9,2,.78)'],[1,'transparent']]);
-      ctx.restore();
-    }
-    ctx.shadowColor='#300702';
-    ctx.shadowBlur=radius*.18;
     ctx.translate(x,y);
     ctx.rotate(cheer*Math.sin(age*10)*.25);
     if(open && logoOutline.width>300){
@@ -930,8 +921,10 @@ function draw(time) {
       ctx.drawImage(logoOutline,-logoWidth/2-padding,-logoHeight/2-padding,
         logoWidth+2*padding,logoHeight+2*padding);
       ctx.restore();
-      ctx.shadowBlur=0;
     }
+    ctx.shadowColor='rgba(48,7,2,.55)';
+    ctx.shadowBlur=radius*.10;
+    ctx.shadowOffsetY=radius*.02;
     ctx.drawImage(logo,-logoWidth/2,-logoHeight/2,logoWidth,logoHeight);
     ctx.restore();
   }
